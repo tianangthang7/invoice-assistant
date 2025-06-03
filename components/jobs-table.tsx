@@ -20,6 +20,7 @@ import {
   // Potential icons for status, e.g., CircleCheck, CircleX, Loader2
   Trash2,
 } from "lucide-react"
+import Link from "next/link"
 
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -43,6 +44,7 @@ import {
 } from "@/components/ui/table"
 import { Job } from "@/app/dashboard/jobs/page" // Assuming Job type is exported from here
 import { Badge } from "@/components/ui/badge" // For status display
+import { StatusBadge } from "@/components/status-badge"; // Import the new component
 import { createClient } from "@/lib/supabase/client"; // Import Supabase client
 
 // Helper function to format date as hh:mm dd/mm/yyyy
@@ -86,19 +88,6 @@ export const columns: ColumnDef<Job>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "id",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        ID
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("id")}</div>,
-  },
-  {
     accessorKey: "name",
     header: ({ column }) => (
       <Button
@@ -124,13 +113,7 @@ export const columns: ColumnDef<Job>[] = [
     ),
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
-      let variant: "default" | "secondary" | "destructive" | "outline" = "secondary";
-      if (status === "completed" || status === "success") variant = "default"; // Or a success variant if you have one
-      else if (status === "failed" || status === "error") variant = "destructive";
-      else if (status === "pending") variant = "outline";
-      // Add more status mappings as needed
-
-      return <Badge variant={variant} className="capitalize">{status || "N/A"}</Badge>;
+      return <StatusBadge status={status} />;
     },
   },
   {
@@ -171,7 +154,9 @@ export const columns: ColumnDef<Job>[] = [
               Copy Job ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View Job Details (TBD)</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href={`/dashboard/jobs/${job.id}`}>View Job Details</Link>
+            </DropdownMenuItem>
             {/* Add other actions like retry, cancel, etc. */}
           </DropdownMenuContent>
         </DropdownMenu>

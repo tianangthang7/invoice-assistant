@@ -2,9 +2,11 @@
 
 import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { UploadCloud, FileText, Image as ImageIcon } from 'lucide-react';
+import { UploadCloud } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { createClient } from '@/lib/supabase/client';
+import { createJob } from './action';
+import { JobFileItem } from '@/components/job-file-item';
 
 export default function QuickCreatePage() {
   const [files, setFiles] = useState<File[]>([]);
@@ -15,9 +17,17 @@ export default function QuickCreatePage() {
     const user = (await supabase.auth.getUser()).data.user; 
 
     // create a job
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // Month is 0-indexed
+    const year = now.getFullYear();
+    const formattedDate = `${hours}:${minutes} ${day}/${month}/${year}`;
+
     const { data: jobData, error: jobError } = await supabase.from('jobs').insert({
       user_id: user?.id,
-      name: 'New Job ' + new Date().toISOString(),
+      name: 'Job ' + formattedDate,
       status: 'pending',
     }).select().single();
 
@@ -28,20 +38,54 @@ export default function QuickCreatePage() {
     }
 
     if (acceptedFiles.length > 0) {
-      const fileToUpload = acceptedFiles[0];
-      const { data, error } = await supabase.from('files').insert({
-        user_id: user?.id,
-        name: fileToUpload.name,
-        size_bytes: fileToUpload.size, 
-        mime_type: fileToUpload.type,  
-        job_id: jobData?.id,
-      });
+      acceptedFiles.forEach(async (fileToUpload) => {
+      // upload the file to supabase storage
+      //
+      const { data: storageData, error: storageError } =
+       await supabase.storage.from('files').upload(fileToUpload.name, fileToUpload,
+        {
+          upsert: true,
+        }
+       );
 
-      if (error) {  
-        console.error("Supabase insert error:", error);
+      if (storageError) {
+        console.error("Supabase storage upload error:", storageError);
+        // Early return or throw error if storage upload is critical for the next step
+        return; 
       } else {
-        console.log("Supabase insert success:", data);
+        console.log("Supabase storage upload success:", storageData);
       }
+
+      // Ensure storageData and storageData.fullPath are valid before using them
+      if (!storageData || !storageData.fullPath) {
+       console.error("File upload to storage did not return a valid path. storageData:", storageData);
+       // Handle this error appropriately - maybe don't proceed with DB insert
+       return;
+      }
+
+       const { data, error } = await supabase.from('files').insert({
+         user_id: user?.id,
+         name: fileToUpload.name,
+         size_bytes: fileToUpload.size, 
+         mime_type: fileToUpload.type,  
+         job_id: jobData?.id,
+         full_path: storageData.fullPath, 
+         path: storageData.path,
+         status: 'pending',
+      }).select().single();
+      // update files state with the new file, replace the file with the new one
+      setFiles(prevFiles => prevFiles.map(file => file.name === fileToUpload.name ? data : file));
+      if (error) {  
+       console.error("Supabase insert error for 'files' table:", error);
+       // If insert fails, data might be null or undefined.
+       // createJob would then receive null/undefined.
+      } else if (!data) {
+       console.error("Supabase insert into 'files' table succeeded but returned no data. This could be RLS or an issue with .select().single().");
+      } else {
+       console.log("Supabase insert success for 'files' table:", data);
+          createJob(data);
+        }
+      });
     }
     }, []);
 
@@ -55,25 +99,6 @@ export default function QuickCreatePage() {
     noClick: true,
     noKeyboard: true
   });
-
-  const formatBytes = (bytes: number, decimals = 2) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-  }
-
-  const getFileIcon = (fileType: string) => {
-    if (fileType.startsWith('image/')) {
-      return <ImageIcon className="w-6 h-6 text-muted-foreground" />;
-    }
-    if (fileType === 'application/pdf') {
-      return <FileText className="w-6 h-6 text-muted-foreground" />;
-    }
-    return <FileText className="w-6 h-6 text-muted-foreground" />;
-  };
 
   return (
     <div className="flex flex-col items-center justify-center p-10 bg-background text-foreground">
@@ -99,16 +124,10 @@ export default function QuickCreatePage() {
 
       {files.length > 0 && (
         <div className="w-full mt-6">
-          <h3 className="text-lg font-semibold mb-2">Uploaded Files:</h3>
+          <h3 className="text-lg font-semibold mb-2">Selected Files:</h3>
           <ul className="space-y-2">
             {files.map((file, index) => (
-              <li key={index} className="flex items-center justify-between p-3 rounded-md border border-border bg-card">
-                <div className="flex items-center space-x-3">
-                  {getFileIcon(file.type)}
-                  <span className="text-sm font-medium">{file.name}</span>
-                </div>
-                <span className="text-sm text-muted-foreground">{formatBytes(file.size)}</span>
-              </li>
+              <JobFileItem key={index} file={file} />
             ))}
           </ul>
         </div>
