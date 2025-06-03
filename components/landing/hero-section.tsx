@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, FileCheck2 } from "lucide-react";
+import { FileCheck2 } from "lucide-react";
 
 export function HeroSection() {
   return (

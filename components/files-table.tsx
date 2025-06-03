@@ -50,6 +50,7 @@ import {
 } from "@/components/ui/table"
 import { File } from "@/app/dashboard/files/page" // Assuming File type is exported from here
 import { createClient } from "@/lib/supabase/client"
+import Link from "next/link"
 
 export const columns: ColumnDef<File>[] = [
   {
@@ -195,7 +196,9 @@ export const columns: ColumnDef<File>[] = [
               Copy File ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View details (TBD)</DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href={`/dashboard/files/${file.id}`}>View Details</Link>
+            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )
