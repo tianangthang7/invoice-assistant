@@ -43,7 +43,6 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Job } from "@/app/dashboard/jobs/page" // Assuming Job type is exported from here
-import { Badge } from "@/components/ui/badge" // For status display
 import { StatusBadge } from "@/components/status-badge"; // Import the new component
 import { createClient } from "@/lib/supabase/client"; // Import Supabase client
 

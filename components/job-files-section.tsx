@@ -1,6 +1,5 @@
 "use client";
 
-import { ExternalLink } from 'lucide-react';
 import { JobFile } from '@/app/dashboard/jobs/[id]/page'; // Adjust path if JobFile moves
 import { JobFileItem } from './job-file-item'; // Import the new JobFileItem component
 

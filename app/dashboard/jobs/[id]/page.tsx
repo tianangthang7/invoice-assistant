@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useParams, useRouter } from 'next/navigation'; // Added useRouter
 import { StatusBadge } from "@/components/status-badge"; // Import the new component
-import { ExternalLink, ArrowLeft, Briefcase } from 'lucide-react'; // Added ArrowLeft, removed Paperclip if not used directly here
+import {  ArrowLeft, Briefcase } from 'lucide-react'; // Added ArrowLeft, removed Paperclip if not used directly here
 import { JobFilesSection } from "@/components/job-files-section"; // Import the new section component
 import { Button } from '@/components/ui/button'; // Added Button for Back button
 

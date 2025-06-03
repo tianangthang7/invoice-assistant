@@ -1,11 +1,11 @@
 "use client";
 
-import { ExternalLink, FileText, ImageIcon, Paperclip } from 'lucide-react';
+import {  FileText, ImageIcon, Paperclip } from 'lucide-react';
 import { JobFile } from '@/app/dashboard/jobs/[id]/page'; // Adjust path if JobFile moves or is centralized
 import { StatusBadge } from './status-badge';
 
 // Helper function to check if the object is a File API object
-function isBrowserFile(file: any): file is File {
+function isBrowserFile(file: File | JobFile): file is File {
   return file instanceof File;
 }
 

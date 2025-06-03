@@ -1,9 +1,7 @@
 "use client";
 
 import { FilesTable } from '@/components/files-table';
-import { Button } from '@/components/ui/button';
 import { createClient } from '@/lib/supabase/client';
-import { PlusIcon } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 // Define the structure of a file object based on your table schema
