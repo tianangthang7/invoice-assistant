@@ -4,7 +4,12 @@ import { Invoice } from "@/components/invoice-item";
 import axios from "axios";
 import * as https from "https";
 
-async function checkInvoice(invoiceData: any, captcha: any): Promise<any> {
+export interface CaptchaEntity {
+  key: string;
+  captchaText: string;
+}
+
+async function checkInvoice(invoiceData: Invoice, captcha: CaptchaEntity) {
   const agent = new https.Agent({
     rejectUnauthorized: false, // This disables certificate validation
   });
@@ -58,7 +63,7 @@ export async function checkInvoiceValidity(invoice: Invoice) {
   console.log("checkedInvoice :", checkedInvoice);
   return {
     isValid: checkedInvoice.is_valid,
-    message: checkedInvoice.message,
+    message: checkedInvoice.validity_message,
     checkedAt: new Date(),
   };
 }
@@ -67,6 +72,6 @@ export async function saveInvoice(invoice: Invoice) {
   const server_url = process.env.INVOICE_SERVER_URL;
   console.log("server_url :", server_url);
   const response = await axios.post(`${server_url}/invoice/save`, invoice);
-  const savedInvoice = response.data.data;
+  const savedInvoice = response.data.data as Invoice;
   return savedInvoice;
 }

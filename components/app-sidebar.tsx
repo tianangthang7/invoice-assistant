@@ -5,7 +5,6 @@ import {
   IconFile,
   IconHelp,
   IconHome,
-  IconInnerShadowTop,
   IconListDetails,
   IconSearch,
   IconSettings,

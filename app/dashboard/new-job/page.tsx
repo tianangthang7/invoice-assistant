@@ -1,13 +1,13 @@
 "use client"
 
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { UploadCloud, FileText, Clock, CheckCircle2 } from 'lucide-react';
+import { UploadCloud } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { createClient } from '@/lib/supabase/client';
 import { createJob } from './action';
 import { JobFileItem } from '@/components/job-file-item';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function QuickCreatePage() {
   const [files, setFiles] = useState<File[]>([]);

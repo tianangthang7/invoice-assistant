@@ -3,7 +3,6 @@
 import { IconCirclePlusFilled, type Icon } from "@tabler/icons-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useRouter } from "next/navigation";
 
 import {
   SidebarGroup,
@@ -24,7 +23,6 @@ export function NavMain({
   }[]
 }) {
   const pathname = usePathname()
-  const router = useRouter()
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">

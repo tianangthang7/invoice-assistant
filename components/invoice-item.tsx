@@ -1,14 +1,12 @@
 "use client";
 
-import Link from 'next/link';
 import { StatusBadge } from '@/components/status-badge';
-import { Hash, Tag, Percent, DollarSign, CalendarDays, CheckCircle, XCircle, Loader2, ShieldCheck, Save, AlertCircle } from 'lucide-react';
+import { Hash, Tag, Percent, DollarSign, CheckCircle, XCircle, Loader2, ShieldCheck, Save, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useState, useEffect } from 'react';
 import { checkInvoiceValidity, saveInvoice } from '@/app/dashboard/files/[id]/actions';
-// import { updateInvoiceAction } from '@/app/actions/invoiceActions';
 
 interface ValidityResult {
   isValid: boolean;
@@ -19,34 +17,24 @@ interface ValidityResult {
 export interface Invoice {
   id: number;
   created_at: string;
-  invoice_number: string | null;
-  invoice_symbol: string | null;
-  tax_code: string | null;
-  total_tax: number | null;
-  total_bill: number | null;
-  status: string | null;
-  file_id: number | null; // Remains, though not displayed as per previous change
-  is_valid: boolean | null; // Added for displaying pre-existing validity
+  invoice_number: string ;
+  invoice_symbol: string ;
+  tax_code: string ;
+  total_tax: number ;
+  total_bill: number ;
+  status: string ;
+  file_id: number ; // Remains, though not displayed as per previous change
+  is_valid: boolean ; // Added for displaying pre-existing validity
   validity_message: string | null; // Added for displaying pre-existing validity message
   validity_checked_at: string | null; // Added for displaying pre-existing validity check date
+  updated_at: Date;
+
 }
+
 
 interface InvoiceItemProps {
   invoice: Invoice;
 }
-
-const formatCurrency = (amount: number | null | undefined, currency = 'USD') => {
-  if (amount === null || amount === undefined) return 'N/A';
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency }).format(amount);
-};
-
-const formatEuropeanNumber = (value: number | null | undefined): string => {
-  if (value === null || value === undefined) return '';
-  return value.toLocaleString('de-DE', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-  });
-};
 
 
 export function InvoiceItem({ invoice }: InvoiceItemProps) {

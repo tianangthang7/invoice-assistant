@@ -108,7 +108,7 @@ export default function Page() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Welcome back, {user?.name}!</h1>
-          <p className="text-muted-foreground">Here's what's happening with your jobs</p>
+          <p className="text-muted-foreground">Here&apos;s what&apos;s happening with your jobs</p>
         </div>
         <Link href="/dashboard/new-job">
           <Button className="flex items-center gap-2">
