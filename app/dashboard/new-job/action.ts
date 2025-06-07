@@ -15,9 +15,8 @@ interface IFile {
 
 export async function createJob(file: IFile) {
   const server_url = process.env.INVOICE_SERVER_URL;
-  console.log("file :", JSON.stringify(file));
   try {
-    const response = await axios.post(`${server_url}/llm-parser/parse`, file);
+    const response = await axios.post(`${server_url}/upload`, file);
     console.log("data :", response.data);
   } catch (error) {
     console.error("Error calling llm-parser:", error);

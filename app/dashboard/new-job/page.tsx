@@ -1,18 +1,22 @@
 "use client"
 
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { UploadCloud } from 'lucide-react';
+import { UploadCloud, FileText, Clock, CheckCircle2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { createClient } from '@/lib/supabase/client';
 import { createJob } from './action';
 import { JobFileItem } from '@/components/job-file-item';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function QuickCreatePage() {
   const [files, setFiles] = useState<File[]>([]);
 
   const onDrop = useCallback(async (acceptedFiles: File[]) => {
+  console.log('QuickCreatePage 3');
+
     setFiles(prevFiles => [...prevFiles, ...acceptedFiles]);
+
     const supabase = await createClient();
     const user = (await supabase.auth.getUser()).data.user; 
 
@@ -101,37 +105,44 @@ export default function QuickCreatePage() {
   });
 
   return (
-    <div className="flex flex-col items-center justify-center p-10 bg-background text-foreground">
-      <div
-        {...getRootProps()}
-        className={`flex flex-col items-center justify-center w-full p-8 border-2 border-dashed rounded-lg cursor-pointer transition-colors
-          ${isDragActive ? 'border-primary bg-accent' : 'border-input hover:border-primary/70 bg-card'}`}
-      >
-        <input {...getInputProps()} />
-        <UploadCloud className={`w-12 h-12 mb-4 transition-colors ${isDragActive ? 'text-primary' : 'text-muted-foreground'}`} />
-        <p className="mb-2 text-lg font-semibold text-center">
-          Drag and drop files here
-        </p>
-        <p className="text-sm text-muted-foreground text-center">PDFs and images only (JPG, PNG)</p>
-        <Button
-          type="button"
-          onClick={open}
-          className="mt-4"
-        >
-          Browse Files
-        </Button>
-      </div>
+    <div className="container mx-auto p-6 space-y-6">
+      {/* Upload Section */}
+      <Card>
+        <CardContent>
+          <div
+            {...getRootProps()}
+            className={`flex flex-col items-center justify-center w-full p-8 border-2 border-dashed rounded-lg cursor-pointer transition-colors
+              ${isDragActive ? 'border-primary bg-accent' : 'border-input hover:border-primary/70 bg-card'}`}
+          >
+            <input {...getInputProps()} />
+            <UploadCloud className={`w-12 h-12 mb-4 transition-colors ${isDragActive ? 'text-primary' : 'text-muted-foreground'}`} />
+            <p className="mb-2 text-lg font-semibold text-center">
+              Drag and drop files here
+            </p>
+            <p className="text-sm text-muted-foreground text-center mb-4">PDFs and images only (JPG, PNG)</p>
+            <Button
+              type="button"
+              onClick={open}
+              className="mt-2"
+            >
+              Browse Files
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
 
+      {/* Files List Section */}
       {files.length > 0 && (
-        <div className="w-full mt-6">
-          <h3 className="text-lg font-semibold mb-2">Selected Files:</h3>
-          <ul className="space-y-2">
-            {files.map((file, index) => (
-              <JobFileItem key={index} file={file} />
-            ))}
-          </ul>
-        </div>
+        <Card>
+          <CardContent>
+            <div className="space-y-2">
+              {files.map((file, index) => (
+                <JobFileItem key={index} file={file} />
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       )}
     </div>
   );
-} 
+}

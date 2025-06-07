@@ -97,7 +97,7 @@ export default function FileDetailPage() {
         .from('invoices')
         .select('*')
         .eq('file_id', parseInt(fileId, 10))
-        .order('created_at', { ascending: false });
+        .order('updated_at', { ascending: false });
         console.log('data :', data);
 
       if (fetchError) {

@@ -3,6 +3,7 @@
 import { IconCirclePlusFilled, type Icon } from "@tabler/icons-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
+import { useRouter } from "next/navigation";
 
 import {
   SidebarGroup,
@@ -23,13 +24,13 @@ export function NavMain({
   }[]
 }) {
   const pathname = usePathname()
-
+  const router = useRouter()
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
         <SidebarMenu>
           <SidebarMenuItem className="flex items-center gap-2">
-            <Link href="/dashboard/new-job">
+              <Link href="/dashboard/new-job/">
               <SidebarMenuButton
                 tooltip="Quick Create"
                 className={cn(
@@ -45,7 +46,7 @@ export function NavMain({
         </SidebarMenu>
         <SidebarMenu>
           {items.map((item) => {
-            const isActive = pathname.includes(item.url)
+            const isActive = pathname===item.url
             return (
               <Link href={item.url} key={item.title}>
                 <SidebarMenuItem key={item.title}>

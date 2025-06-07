@@ -28,6 +28,7 @@ export interface JobFile {
   mime_type: string | null; // Matches files.mime_type (text)
   status: string | null; // Matches files.status (text)
   path: string | null; // Matches files.path (text), optional to add if needed
+  user_id: string | null; // Matches files.user_id (uuid)
 }
 
 export default function JobDetailPage() {
@@ -140,7 +141,7 @@ export default function JobDetailPage() {
         <div className="flex items-center mb-2">
             <Briefcase className="w-7 h-7 mr-3 text-primary" />
             <h1 className="text-2xl lg:text-3xl font-semibold">
-                Job: {job.name || 'Untitled Job'}
+                {job.name || 'Untitled Job'}
             </h1>
         </div>
         <div className="shadow rounded-lg p-6 bg-card text-card-foreground">

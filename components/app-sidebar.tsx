@@ -4,6 +4,7 @@ import * as React from "react"
 import {
   IconFile,
   IconHelp,
+  IconHome,
   IconInnerShadowTop,
   IconListDetails,
   IconSearch,
@@ -21,6 +22,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import Image from "next/image"
 
 const data = {
   user: {
@@ -29,6 +31,11 @@ const data = {
     avatar: "/avatars/next.svg",
   },
   navMain: [
+    {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: IconHome,
+    },
     {
       title: "Jobs",
       url: "/dashboard/jobs",
@@ -70,8 +77,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
               <a href="#">
-                <IconInnerShadowTop className="!size-5" />
-                <span className="text-base font-semibold">MyAssistant.</span>
+                <Image src="/logo.png" alt="MyAssistant" width={32} height={32} className="rounded-md"/>
+                <span className="text-base font-semibold">MyAssistant</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
